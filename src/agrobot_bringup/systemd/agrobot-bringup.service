@@ -1,0 +1,31 @@
+# Starts the agrobot bringup (ros2_control + ODrives + F710 teleop) at boot.
+#
+# This is a systemd *user* service for user 'agrobot'. Linger is enabled
+# (loginctl enable-linger agrobot), so it starts at boot without anyone logging in.
+#
+# Install / enable (once):
+#   systemctl --user enable ~/agrobot_ws/src/agrobot_bringup/systemd/agrobot-bringup.service
+# Use:
+#   systemctl --user start|stop|restart|status agrobot-bringup
+#   journalctl --user -u agrobot-bringup -f
+# Stop autostart:
+#   systemctl --user disable agrobot-bringup
+
+[Unit]
+Description=Agrobot bringup (ros2_control, ODrive, F710 teleop)
+
+[Service]
+Type=simple
+# can0 is brought up by systemd-networkd (/etc/systemd/network/80-can.network); wait for it.
+ExecStartPre=/bin/bash -c 'for i in $(seq 60); do ip link show can0 2>/dev/null | grep -q "state UP" && exit 0; sleep 1; done; echo "can0 is not up" >&2; exit 1'
+ExecStart=/bin/bash -c 'source /opt/ros/jazzy/setup.bash && source /home/agrobot/agrobot_ws/install/setup.bash && exec ros2 launch agrobot_bringup bringup.launch.py'
+Environment=PYTHONUNBUFFERED=1
+Environment=RCUTILS_COLORIZED_OUTPUT=0
+# ros2 launch shuts its nodes down cleanly on SIGINT
+KillSignal=SIGINT
+TimeoutStopSec=20
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,10 @@
+<library path="agrobot_odrive_plugins">
+  <class name="agrobot_odrive/GearedODriveHardwareInterface"
+         type="agrobot_odrive::GearedODriveHardwareInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Wraps odrive_ros2_control_plugin/ODriveHardwareInterface (unmodified) and adds a per-joint
+      gear_ratio parameter (ODrive turns per joint turn).
+    </description>
+  </class>
+</library>

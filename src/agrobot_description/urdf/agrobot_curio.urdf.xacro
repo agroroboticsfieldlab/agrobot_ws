@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!-- Agrobot Curio: differential drive base, two ODrive driven wheels at the front, two casters at the rear -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="agrobot_curio">
+  <xacro:arg name="prefix" default="" />
+  <xacro:arg name="use_mock_hardware" default="false" />
+
+  <xacro:include filename="$(find agrobot_description)/urdf/agrobot_curio_description.urdf.xacro" />
+
+  <!-- Import Rviz colors -->
+  <xacro:include filename="$(find agrobot_description)/urdf/agrobot_curio.materials.xacro" />
+
+  <!-- Import agrobot_curio ros2_control description -->
+  <xacro:include filename="$(find agrobot_description)/urdf/agrobot_curio.ros2_control.xacro" />
+
+  <xacro:agrobot_curio prefix="$(arg prefix)" />
+
+  <xacro:agrobot_curio_ros2_control
+    name="agrobot_curio_hardware" prefix="$(arg prefix)" use_mock_hardware="$(arg use_mock_hardware)"/>
+
+</robot>
